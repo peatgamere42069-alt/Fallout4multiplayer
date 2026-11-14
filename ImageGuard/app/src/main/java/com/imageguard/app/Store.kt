@@ -56,6 +56,10 @@ class Store private constructor(private val context: Context) {
         get() = prefs.getBoolean("auto_protect", false)
         set(v) = prefs.edit().putBoolean("auto_protect", v).apply()
 
+    var webFilter: Boolean
+        get() = prefs.getBoolean("web_filter", false)
+        set(v) = prefs.edit().putBoolean("web_filter", v).apply()
+
     var lastFullScan: Long
         get() = prefs.getLong("last_full_scan", 0L)
         set(v) = prefs.edit().putLong("last_full_scan", v).apply()

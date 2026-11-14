@@ -67,4 +67,6 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
     implementation("org.tensorflow:tensorflow-lite:2.16.1")
+
+    testImplementation("junit:junit:4.13.2")
 }

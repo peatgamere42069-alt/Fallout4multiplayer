@@ -5,3 +5,5 @@ local.properties
 .idea/
 *.jks
 *.keystore
+# Downloaded at build time by CI
+app/src/main/assets/blocklist.txt

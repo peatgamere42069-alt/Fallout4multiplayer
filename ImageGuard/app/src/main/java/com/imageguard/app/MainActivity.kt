@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import android.net.VpnService
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -40,6 +41,21 @@ class MainActivity : AppCompatActivity() {
     private lateinit var scanProgress: LinearProgressIndicator
     private lateinit var btnScan: Button
     private lateinit var btnQuarantine: Button
+    private lateinit var switchWeb: MaterialSwitch
+    private lateinit var webStatus: TextView
+    private lateinit var btnAlwaysOn: Button
+    private var updatingUi = false
+
+    private val vpnRequest =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                store.webFilter = true
+                WebFilterService.start(this)
+            } else {
+                Toast.makeText(this, R.string.vpn_denied, Toast.LENGTH_LONG).show()
+            }
+            refresh()
+        }
 
     private val legacyStorageRequest =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { refresh() }
@@ -64,6 +80,35 @@ class MainActivity : AppCompatActivity() {
         scanProgress = findViewById(R.id.scanProgress)
         btnScan = findViewById(R.id.btnScan)
         btnQuarantine = findViewById(R.id.btnQuarantine)
+        switchWeb = findViewById(R.id.switchWeb)
+        webStatus = findViewById(R.id.webStatus)
+        btnAlwaysOn = findViewById(R.id.btnAlwaysOn)
+
+        switchWeb.setOnCheckedChangeListener { button, checked ->
+            if (updatingUi) return@setOnCheckedChangeListener // ignore refresh() updates
+            if (checked) {
+                val consent = VpnService.prepare(this)
+                if (consent != null) {
+                    vpnRequest.launch(consent)
+                } else {
+                    store.webFilter = true
+                    WebFilterService.start(this)
+                }
+            } else {
+                store.webFilter = false
+                WebFilterService.stop(this)
+            }
+            // The service starts asynchronously; refresh shortly after.
+            button.postDelayed({ refresh() }, 600)
+        }
+        btnAlwaysOn.setOnClickListener {
+            Toast.makeText(this, R.string.always_on_hint, Toast.LENGTH_LONG).show()
+            try {
+                startActivity(Intent(Settings.ACTION_VPN_SETTINGS))
+            } catch (e: ActivityNotFoundException) {
+                startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS))
+            }
+        }
 
         btnStorage.setOnClickListener { requestStorage() }
         btnNotifications.setOnClickListener {
@@ -122,6 +167,9 @@ class MainActivity : AppCompatActivity() {
         refresh()
         // Make sure protection is running whenever the app is opened (e.g. after Samsung killed it).
         if (store.autoProtect && Permissions.hasStorage(this)) GuardService.start(this)
+        if (store.webFilter && !WebFilterService.isRunning && VpnService.prepare(this) == null) {
+            WebFilterService.start(this)
+        }
     }
 
     private fun refresh() {
@@ -142,6 +190,12 @@ class MainActivity : AppCompatActivity() {
             }
         )
         btnQuarantine.text = getString(R.string.btn_quarantine, store.quarantined().size)
+        val webOn = store.webFilter
+        updatingUi = true
+        switchWeb.isChecked = webOn
+        updatingUi = false
+        webStatus.setText(if (webOn) R.string.web_on else R.string.web_off)
+        btnAlwaysOn.visibility = if (webOn) View.VISIBLE else View.GONE
         renderScan(ScanState.progress.value)
     }
 

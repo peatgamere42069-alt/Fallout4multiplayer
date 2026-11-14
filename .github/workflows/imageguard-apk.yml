@@ -42,6 +42,18 @@ jobs:
             echo "No signing secrets set; APK will be signed with a temporary key."
           fi
 
+      # Adult + ads + malware domains (StevenBlack hosts, MIT licence), bundled fresh into each build.
+      - name: Download web blocklist
+        run: |
+          curl -fsSL --retry 3 -o hosts.txt \
+            https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn/hosts
+          awk '$1=="0.0.0.0" && $2!="0.0.0.0" {print tolower($2)}' hosts.txt | sort -u \
+            > app/src/main/assets/blocklist.txt
+          rm hosts.txt
+          count=$(wc -l < app/src/main/assets/blocklist.txt)
+          echo "Blocklist domains: $count"
+          [ "$count" -gt 50000 ] || { echo "Blocklist looks wrong"; exit 1; }
+
       - name: Build APK
         env:
           IG_KEYSTORE_PASSWORD: ${{ secrets.IG_KEYSTORE_PASSWORD }}
@@ -49,7 +61,7 @@ jobs:
           IG_KEY_PASSWORD: ${{ secrets.IG_KEY_PASSWORD }}
         run: |
           chmod +x gradlew
-          ./gradlew --no-daemon assembleRelease
+          ./gradlew --no-daemon testReleaseUnitTest assembleRelease
           cp app/build/outputs/apk/release/app-release.apk "ImageGuard-${GITHUB_RUN_NUMBER}.apk"
 
       - uses: actions/upload-artifact@v4

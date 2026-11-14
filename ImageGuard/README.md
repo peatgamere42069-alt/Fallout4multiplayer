@@ -1,7 +1,7 @@
 # ImageGuard
 
-An Android app that finds explicit/pornographic images on your phone and removes them automatically.
-Everything runs on the phone: the app has **no internet permission**, so photos are never uploaded.
+An Android app that removes explicit/pornographic images from your phone and filters them out of
+web searches, websites and ads. Photos are checked on the phone and are never uploaded.
 
 ## What it does
 
@@ -12,6 +12,15 @@ Everything runs on the phone: the app has **no internet permission**, so photos 
 - **Removed images**: flagged images are moved into a private, hidden quarantine, not deleted outright.
   You can restore false alarms (they won't be flagged again) or delete everything permanently.
 - **Sensitivity**: choose how strict it is (default: remove anything scoring 60% or higher).
+- **Web search, adult site & ad filter** (works in every browser and app):
+  - forces **SafeSearch** on Google, Bing, DuckDuckGo and YouTube, so explicit images are hidden
+    from search and image results;
+  - blocks ~150,000 adult, advertising, tracker and malware domains (StevenBlack hosts list);
+  - looks up every other site through **AdGuard Family DNS**, a second filter for adult sites and ads;
+  - blocks common ways apps get around it (Firefox/Chrome encrypted DNS, hard-coded DNS servers).
+
+  It runs as a local VPN that only handles DNS (website-name lookups). Your other traffic is not
+  routed through it. AdGuard sees which site names are looked up, not the pages or content.
 
 ## Install on a Samsung phone
 
@@ -25,18 +34,28 @@ Everything runs on the phone: the app has **no internet permission**, so photos 
    - **Turn off battery optimisation** → *Allow*. On Samsung also check
      Settings → Battery → Background usage limits and make sure ImageGuard is not in *Sleeping/Deep sleeping apps*.
 4. Switch on **Auto-protect**, then tap **Scan all photos now**.
+5. Switch on **Filter web searches, adult sites & ads** and accept the VPN request. Then:
+   - tap **Make it always-on**, tap ⚙️ next to ImageGuard, and turn on **Always-on VPN** and
+     **Block connections without VPN** (keeps it running and makes it harder to switch off);
+   - in Chrome: Settings → Privacy and security → **Use secure DNS** → off;
+   - in phone Settings → Connections → More connection settings → **Private DNS** → Off or Automatic.
 
 ## Limits
 
-- It checks **image files** saved on the phone. It does not scan videos, and it cannot block images
-  shown inside other apps or websites that are never saved to storage.
+- The photo scanner checks **image files** saved on the phone, not videos.
+- The web filter works per website, not per image: it can't hide individual explicit images on
+  general-purpose sites that aren't blocked (e.g. Reddit, X/Twitter), and ads served from the same
+  domain as the content (YouTube, Instagram, Facebook in-app ads) still show.
+- Only one VPN can run at a time, so it can't be combined with another VPN app.
 - No classifier is perfect: some explicit images may be missed and some normal photos
   (e.g. swimwear) may be flagged. Use the sensitivity slider and the Removed-images screen to tune it.
 
 ## Building
 
-GitHub Actions builds the APK on every push (`.github/workflows/imageguard-apk.yml`) and publishes it
-as a release. To build locally: install the Android SDK and run `./gradlew assembleRelease` in this folder.
+GitHub Actions builds the APK on every push (`.github/workflows/imageguard-apk.yml`), runs the unit
+tests, and publishes the APK as a release. To build locally: install the Android SDK, save the domain
+list from the workflow's *Download web blocklist* step as `app/src/main/assets/blocklist.txt`
+(optional; without it only AdGuard's filtering applies), and run `./gradlew assembleRelease`.
 
 ### Stable signing key (optional)
 
@@ -49,6 +68,9 @@ and add these repository secrets: `IG_KEYSTORE_BASE64` (output of `base64 -w0 re
 `IG_KEYSTORE_PASSWORD`, `IG_KEY_ALIAS`, `IG_KEY_PASSWORD`. Never commit the keystore.
 
 ## Credits
+
+Web blocklist: [StevenBlack/hosts](https://github.com/StevenBlack/hosts) (MIT), downloaded at build
+time. Upstream filtering: [AdGuard Family DNS](https://adguard-dns.io/en/public-dns.html).
 
 The classifier is Yahoo's [open_nsfw](https://github.com/yahoo/open_nsfw) model (BSD 2-Clause),
 using the TensorFlow Lite conversion from

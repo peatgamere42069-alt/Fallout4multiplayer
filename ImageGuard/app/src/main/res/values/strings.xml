@@ -17,6 +17,16 @@
     <string name="threshold_label">Remove images scoring %1$d%% or higher</string>
     <string name="threshold_body" formatted="false">Lower = stricter: more is blocked, but some normal photos (e.g. swimwear) may be caught. Higher = only clearly explicit images. Default: 60%.</string>
 
+    <string name="web_filter">Filter web searches, adult sites &amp; ads</string>
+    <string name="web_filter_body">Works in every browser and app. Forces SafeSearch on Google, Bing, DuckDuckGo and YouTube (explicit images are hidden from search results), blocks about 150,000 adult, ad, tracker and malware sites, and checks every other site against AdGuard's family-safe DNS.</string>
+    <string name="web_on">✅ Web filter is ON (shown as a VPN key icon in the status bar).</string>
+    <string name="web_off">Web filter is OFF.</string>
+    <string name="btn_always_on">Make it always-on (recommended)</string>
+    <string name="always_on_hint">Tap the ⚙️ next to ImageGuard, then turn on "Always-on VPN" and "Block connections without VPN".</string>
+    <string name="web_filter_tips">For it to work everywhere: in Chrome go to Settings → Privacy and security → Use secure DNS and turn it OFF; in phone Settings → Connections → More connection settings, set Private DNS to Off or Automatic. Only one VPN can run at a time.</string>
+    <string name="vpn_session">ImageGuard web filter</string>
+    <string name="vpn_denied">The web filter needs VPN permission to work.</string>
+
     <string name="scan_title">Scan existing photos</string>
     <string name="scan_never">Your existing photos have not been scanned yet.</string>
     <string name="scan_last">Last full scan: %1$s</string>
@@ -26,7 +36,7 @@
     <string name="btn_cancel_scan">Stop scan</string>
     <string name="btn_quarantine">Removed images (%1$d)</string>
 
-    <string name="privacy_note">Everything happens on this phone. ImageGuard has no internet permission, so your photos are never uploaded anywhere. Removed images are kept in a private, hidden quarantine so you can restore false alarms.</string>
+    <string name="privacy_note">Photos are checked on this phone and are never uploaded anywhere. The web filter only sends website names (DNS lookups) to AdGuard Family DNS; it does not see the pages you visit. Removed images are kept in a private, hidden quarantine so you can restore false alarms.</string>
 
     <string name="need_storage">Allow file access first.</string>
     <string name="storage_settings_hint">Find ImageGuard in the list and switch on \"Allow access to manage all files\".</string>
