@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ImageGuard</string>
+
+    <string name="status_protecting">🛡️ Protection is ON — new images are checked as soon as they are saved.</string>
+    <string name="status_off">Protection is OFF. Turn on auto-protect below.</string>
+    <string name="status_needs_setup">Finish setup to start protecting this phone.</string>
+
+    <string name="setup_title">Setup</string>
+    <string name="setup_body">ImageGuard needs file access to remove images from your gallery, Downloads and other folders. On Samsung phones, also turn off battery optimisation so protection keeps running in the background.</string>
+    <string name="btn_storage">Allow file access</string>
+    <string name="btn_notifications">Allow notifications</string>
+    <string name="btn_battery">Turn off battery optimisation</string>
+
+    <string name="auto_protect">Auto-protect</string>
+    <string name="auto_protect_body">Checks every new photo, screenshot and download the moment it is saved, and removes explicit ones automatically. Keeps running after a restart.</string>
+    <string name="threshold_label">Remove images scoring %1$d%% or higher</string>
+    <string name="threshold_body" formatted="false">Lower = stricter: more is blocked, but some normal photos (e.g. swimwear) may be caught. Higher = only clearly explicit images. Default: 60%.</string>
+
+    <string name="scan_title">Scan existing photos</string>
+    <string name="scan_never">Your existing photos have not been scanned yet.</string>
+    <string name="scan_last">Last full scan: %1$s</string>
+    <string name="scan_running">Scanning %1$d of %2$d… (%3$d removed)</string>
+    <string name="scan_done">Scanned %1$d images, removed %2$d.</string>
+    <string name="btn_scan">Scan all photos now</string>
+    <string name="btn_cancel_scan">Stop scan</string>
+    <string name="btn_quarantine">Removed images (%1$d)</string>
+
+    <string name="privacy_note">Everything happens on this phone. ImageGuard has no internet permission, so your photos are never uploaded anywhere. Removed images are kept in a private, hidden quarantine so you can restore false alarms.</string>
+
+    <string name="need_storage">Allow file access first.</string>
+    <string name="storage_settings_hint">Find ImageGuard in the list and switch on \"Allow access to manage all files\".</string>
+
+    <string name="quarantine_title">Removed images</string>
+    <string name="quarantine_body">These images were removed from your phone. They are hidden from the gallery and other apps. Restore any that were removed by mistake; they won\'t be removed again.</string>
+    <string name="quarantine_empty">Nothing has been removed.</string>
+    <string name="quarantine_details">%1$d%% match · %2$s\nFrom: %3$s</string>
+    <string name="btn_view">View</string>
+    <string name="btn_restore">Restore</string>
+    <string name="btn_delete">Delete</string>
+    <string name="btn_delete_all">Delete all permanently</string>
+    <string name="view_warning_title">Show this image?</string>
+    <string name="view_warning_body">It was flagged as possibly explicit.</string>
+    <string name="show">Show</string>
+    <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
+    <string name="delete_all_title">Delete all permanently?</string>
+    <string name="delete_all_body">These images will be gone for good and cannot be restored.</string>
+    <string name="restored_to">Restored to %1$s</string>
+    <string name="restore_failed">Could not restore this image.</string>
+    <string name="unknown">unknown</string>
+
+    <string name="channel_status">Protection status</string>
+    <string name="channel_alerts">Removed images</string>
+    <string name="notif_protecting">Protecting your photos</string>
+    <string name="notif_idle">Working…</string>
+    <string name="notif_scanning">Scanning %1$d of %2$d</string>
+    <string name="notif_removed_title">Explicit image removed</string>
+    <string name="notif_removed_one">Removed %1$s. Tap to review.</string>
+    <plurals name="notif_removed_many">
+        <item quantity="one">Removed %d image. Tap to review.</item>
+        <item quantity="other">Removed %d images. Tap to review.</item>
+    </plurals>
+</resources>
