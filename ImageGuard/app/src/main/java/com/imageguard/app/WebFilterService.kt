@@ -21,7 +21,8 @@ import java.util.concurrent.Executors
 /**
  * Local "VPN" that only handles website lookups (DNS). Nothing else is routed through it.
  *
- *  - Search engines (Google, Bing, DuckDuckGo, YouTube) are forced into SafeSearch.
+ *  - Search engines (Google, Bing, DuckDuckGo) are forced into SafeSearch. YouTube is left
+ *    unrestricted.
  *  - Adult, ad, tracker and malware domains are blocked using a bundled blocklist.
  *  - Everything else is looked up through a family-safe DNS service, which filters again.
  */
@@ -117,7 +118,10 @@ class WebFilterService : VpnService() {
                     // No IPv6/HTTPS records, so browsers use the SafeSearch IPv4 address.
                     Dns.noRecords(p.payload, q)
                 }
-            FilterRules.Decision.Forward -> forward(p.payload) ?: Dns.servfail(p.payload, q)
+            FilterRules.Decision.Forward ->
+                forward(p.payload, UPSTREAM_DNS) ?: Dns.servfail(p.payload, q)
+            FilterRules.Decision.ForwardUnfiltered ->
+                forward(p.payload, UNFILTERED_DNS) ?: Dns.servfail(p.payload, q)
         }
         val reply = Ipv4Udp.build(p.dstIp, p.srcIp, 53, p.srcPort, response)
         try {
@@ -127,8 +131,8 @@ class WebFilterService : VpnService() {
         }
     }
 
-    private fun forward(query: ByteArray): ByteArray? {
-        for (server in UPSTREAM_DNS) {
+    private fun forward(query: ByteArray, servers: List<String>): ByteArray? {
+        for (server in servers) {
             try {
                 DatagramSocket().use { socket ->
                     protect(socket)
@@ -192,6 +196,9 @@ class WebFilterService : VpnService() {
 
         /** AdGuard Family DNS: blocks adult sites and ads, and enforces SafeSearch. */
         private val UPSTREAM_DNS = listOf("94.140.14.15", "94.140.15.16")
+
+        /** Plain DNS (Cloudflare, then Google) for hosts that must not be family-filtered. */
+        private val UNFILTERED_DNS = listOf("1.1.1.1", "8.8.8.8")
 
         private val HIJACKED_DNS = listOf(
             "8.8.8.8", "8.8.4.4", "1.1.1.1", "1.0.0.1", "9.9.9.9", "149.112.112.112",

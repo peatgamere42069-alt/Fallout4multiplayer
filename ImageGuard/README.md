@@ -13,8 +13,9 @@ web searches, websites and ads. Photos are checked on the phone and are never up
   You can restore false alarms (they won't be flagged again) or delete everything permanently.
 - **Sensitivity**: choose how strict it is (default: remove anything scoring 60% or higher).
 - **Web search, adult site & ad filter** (works in every browser and app):
-  - forces **SafeSearch** on Google, Bing, DuckDuckGo and YouTube, so explicit images are hidden
-    from search and image results;
+  - forces **SafeSearch** on Google, Bing and DuckDuckGo, so explicit images are hidden from
+    search and image results (YouTube is deliberately left out of Restricted Mode: its lookups
+    skip the family DNS and go to Cloudflare 1.1.1.1);
   - blocks ~150,000 adult, advertising, tracker and malware domains (StevenBlack hosts list);
   - looks up every other site through **AdGuard Family DNS**, a second filter for adult sites and ads;
   - blocks common ways apps get around it (Firefox/Chrome encrypted DNS, hard-coded DNS servers).

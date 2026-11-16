@@ -75,9 +75,13 @@ class DnsFilterTest {
         assertEquals(
             FilterRules.Decision.SafeSearch(FilterRules.DUCKDUCKGO_SAFE), rules.decide("duckduckgo.com")
         )
-        assertEquals(
-            FilterRules.Decision.SafeSearch(FilterRules.YOUTUBE_SAFE), rules.decide("m.youtube.com")
-        )
+    }
+
+    @Test fun leavesYouTubeUnrestricted() {
+        for (host in listOf("www.youtube.com", "m.youtube.com", "youtubei.googleapis.com", "youtube.com")) {
+            assertEquals(host, FilterRules.Decision.ForwardUnfiltered, rules.decide(host))
+        }
+        assertEquals(FilterRules.Decision.Forward, rules.decide("i.ytimg.com"))
     }
 
     @Test fun buildsNxdomain() {

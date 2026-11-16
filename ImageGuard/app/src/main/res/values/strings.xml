@@ -18,7 +18,7 @@
     <string name="threshold_body" formatted="false">Lower = stricter: more is blocked, but some normal photos (e.g. swimwear) may be caught. Higher = only clearly explicit images. Default: 60%.</string>
 
     <string name="web_filter">Filter web searches, adult sites &amp; ads</string>
-    <string name="web_filter_body">Works in every browser and app. Forces SafeSearch on Google, Bing, DuckDuckGo and YouTube (explicit images are hidden from search results), blocks about 150,000 adult, ad, tracker and malware sites, and checks every other site against AdGuard\'s family-safe DNS.</string>
+    <string name="web_filter_body">Works in every browser and app. Forces SafeSearch on Google, Bing and DuckDuckGo (explicit images are hidden from search results; YouTube is not restricted), blocks about 150,000 adult, ad, tracker and malware sites, and checks every other site against AdGuard\'s family-safe DNS.</string>
     <string name="web_on">✅ Web filter is ON (shown as a VPN key icon in the status bar).</string>
     <string name="web_off">Web filter is OFF.</string>
     <string name="btn_always_on">Make it always-on (recommended)</string>

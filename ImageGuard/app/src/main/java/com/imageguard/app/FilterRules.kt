@@ -8,12 +8,15 @@ class FilterRules(private val blocked: Set<String>) {
         /** Answer with the address of the search engine's forced-SafeSearch host. */
         data class SafeSearch(val host: String) : Decision()
         object Forward : Decision()
+        /** Look up through a normal (non-family) DNS server, e.g. so YouTube isn't restricted. */
+        object ForwardUnfiltered : Decision()
     }
 
     fun decide(rawName: String): Decision {
         val name = rawName.lowercase().trimEnd('.')
         safeSearchHost(name)?.let { return Decision.SafeSearch(it) }
         if (isBlocked(name)) return Decision.Block
+        if (name in YOUTUBE) return Decision.ForwardUnfiltered
         return Decision.Forward
     }
 
@@ -33,6 +36,10 @@ class FilterRules(private val blocked: Set<String>) {
         private val GOOGLE = Regex("^(www\\.)?google(\\.[a-z]{2,3}){1,2}$")
         private val BING = setOf("bing.com", "www.bing.com")
         private val DUCKDUCKGO = setOf("duckduckgo.com", "www.duckduckgo.com", "start.duckduckgo.com")
+        /**
+         * YouTube hosts that family DNS services rewrite to force Restricted Mode. They are looked
+         * up through an unfiltered server so YouTube (app and website) works normally.
+         */
         private val YOUTUBE = setOf(
             "www.youtube.com", "m.youtube.com", "youtube.com",
             "youtubei.googleapis.com", "youtube.googleapis.com", "www.youtube-nocookie.com",
@@ -41,7 +48,6 @@ class FilterRules(private val blocked: Set<String>) {
         const val GOOGLE_SAFE = "forcesafesearch.google.com"
         const val BING_SAFE = "strict.bing.com"
         const val DUCKDUCKGO_SAFE = "safe.duckduckgo.com"
-        const val YOUTUBE_SAFE = "restrictmoderate.youtube.com"
 
         /**
          * Blocked regardless of the blocklist:
@@ -62,7 +68,6 @@ class FilterRules(private val blocked: Set<String>) {
             GOOGLE.matches(name) -> GOOGLE_SAFE
             name in BING -> BING_SAFE
             name in DUCKDUCKGO -> DUCKDUCKGO_SAFE
-            name in YOUTUBE -> YOUTUBE_SAFE
             else -> null
         }
 
